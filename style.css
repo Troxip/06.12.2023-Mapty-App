@@ -228,3 +228,14 @@ a:visited {
 .reset:hover {
   color: rgb(158, 63, 8);
 }
+
+.trashCan {
+  cursor: pointer;
+  font-size: 11px;
+  position: absolute;
+  margin-left: 350px;
+}
+.trashCan:hover {
+  font-size: 15px;
+  margin-left: 347px;
+}

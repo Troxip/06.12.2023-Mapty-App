@@ -8,6 +8,7 @@ const inputDuration = document.querySelector(".form__input--duration");
 const inputCadence = document.querySelector(".form__input--cadence");
 const inputElevation = document.querySelector(".form__input--elevation");
 const resetBtn = document.querySelector(".reset");
+const trashCan = document.querySelector(".trashCan");
 
 class Workout {
   date = new Date();
@@ -63,17 +64,12 @@ class Cycling extends Workout {
   }
 }
 
-// const run1 = new Running([39, -12], 5.2, 24, 178);
-// const cycling1 = new Cycling([39, -12], 27, 95, 523);
-// console.log(run1, cycling1);
-
-//////////////////////////////////
-//Apllication ARCH..
 class App {
   #map;
   #mapZoomLevel = 13;
   #mapEvent;
   #workouts = [];
+  #markers = {}; // New object to store markers
 
   constructor() {
     this._getPosition();
@@ -87,6 +83,7 @@ class App {
     resetBtn.addEventListener("click", this.reset);
 
     containerWorkouts.addEventListener("click", this._moveToPopup.bind(this));
+    containerWorkouts.addEventListener("click", this._removeWorkout.bind(this));
   }
 
   _getPosition() {
@@ -200,7 +197,7 @@ class App {
   }
 
   _renderWorkoutMarker(workout) {
-    L.marker(workout.coords)
+    const marker = L.marker(workout.coords)
       .addTo(this.#map)
       .bindPopup(
         L.popup({
@@ -215,11 +212,15 @@ class App {
         `${workout.type === "running" ? "🏃‍♂️" : "🚴‍♀️"} ${workout._setDescription}`
       )
       .openPopup();
+
+    // Keep track of markers using workout ID as the key
+    this.#markers[workout.id] = marker;
   }
 
   _renderWorkout(workout) {
     let html = `
     <li class="workout workout--${workout.type}" data-id="${workout.id}">
+    <div class="trashCan" data-id="${workout.id}">❌</div>
       <h2 class="workout__title">${workout._setDescription}</h2>
       <div class="workout__details">
         <span class="workout__icon">${
@@ -261,7 +262,6 @@ class App {
         </div>
         </li>
         `;
-
     form.insertAdjacentHTML("afterend", html);
   }
 
@@ -280,9 +280,36 @@ class App {
         duration: 1,
       },
     });
+  }
 
-    // Using the public  interface
-    // workout.clicks();
+  _removeWorkout(e) {
+    const removeButton = e.target.closest(".trashCan");
+    if (!removeButton) return;
+    const workoutId = removeButton.dataset.id;
+    console.log(workoutId);
+
+    // Remove workout from workouts array
+    this.#workouts = this.#workouts.filter(
+      (workout) => workout.id !== workoutId
+    );
+    console.log(this.#workouts);
+
+    // Remove workout from the map using the marker object
+    const marker = this.#markers[workoutId];
+    if (marker) {
+      this.#map.removeLayer(marker);
+      // Remove the marker from the markers object
+      delete this.#markers[workoutId];
+    }
+
+    // Remove workout from the list
+    const workoutElement = document.querySelector(
+      `.workout[data-id="${workoutId}"]`
+    );
+    if (workoutElement) workoutElement.remove();
+
+    // Update local storage
+    this._setLocalStorage();
   }
 
   _setLocalStorage() {
@@ -299,6 +326,7 @@ class App {
       this._renderWorkout(work);
     });
   }
+
   reset() {
     localStorage.removeItem("workouts");
     location.reload();
