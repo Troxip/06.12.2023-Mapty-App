@@ -221,12 +221,17 @@ a:visited {
 
 .reset {
   position: absolute;
-  color: #ffffff;
+  font-weight: bold;
+  color: #000000;
   font-size: 20px;
   cursor: pointer;
+  background-color: rgba(255, 255, 255, 0.527);
+  border-radius: 30px;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 .reset:hover {
-  color: rgb(158, 63, 8);
+  color: rgb(252, 8, 0);
 }
 
 .trashCan {

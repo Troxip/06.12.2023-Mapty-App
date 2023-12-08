@@ -233,7 +233,9 @@ class App {
         <span class="workout__icon">⏱</span>
         <span class="workout__value">${workout.duration}</span>
         <span class="workout__unit">min</span>
-      </div>`;
+      </div>
+      
+      `;
     if (workout.type === "running")
       html += ` 
         <div class="workout__details">
@@ -262,6 +264,7 @@ class App {
         </div>
         </li>
         `;
+
     form.insertAdjacentHTML("afterend", html);
   }
 
@@ -286,13 +289,11 @@ class App {
     const removeButton = e.target.closest(".trashCan");
     if (!removeButton) return;
     const workoutId = removeButton.dataset.id;
-    console.log(workoutId);
 
     // Remove workout from workouts array
     this.#workouts = this.#workouts.filter(
       (workout) => workout.id !== workoutId
     );
-    console.log(this.#workouts);
 
     // Remove workout from the map using the marker object
     const marker = this.#markers[workoutId];
@@ -328,8 +329,11 @@ class App {
   }
 
   reset() {
-    localStorage.removeItem("workouts");
-    location.reload();
+    if (confirm("Are you sure you want to reset data? Press Cancel if not")) {
+      localStorage.removeItem("workouts");
+      location.reload();
+    } else {
+    }
   }
 }
 
