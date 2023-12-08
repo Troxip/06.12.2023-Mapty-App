@@ -21,7 +21,7 @@ html {
 }
 
 body {
-  font-family: 'Manrope', sans-serif;
+  font-family: "Manrope", sans-serif;
   color: var(--color-light--2);
   font-weight: 400;
   line-height: 1.6;
@@ -217,4 +217,14 @@ a:visited {
 }
 .cycling-popup .leaflet-popup-content-wrapper {
   border-left: 5px solid var(--color-brand--1);
+}
+
+.reset {
+  position: absolute;
+  color: #ffffff;
+  font-size: 20px;
+  cursor: pointer;
+}
+.reset:hover {
+  color: rgb(158, 63, 8);
 }
